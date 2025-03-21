@@ -87,10 +87,6 @@ Route::prefix('auth')->group(function () {
     });
 });
 
-Route::post('/zalopay/payment', [ZaloPayController::class, 'createPayment']);
-Route::get('/zalopay/status', [ZaloPayController::class, 'checkPaymentStatus']);
-
-
 Route::prefix('comments')->group(function () {
     Route::get('/', [CommentController::class, 'index']);
     Route::post('/', [CommentController::class, 'store']);
@@ -108,4 +104,6 @@ Route::prefix('promotions')->group(function () {
 Route::get('/orders/{id}/details', [OrderDetailController::class, 'show']);
 Route::post('/orders/{id}/details', [OrderDetailController::class, 'store']);
 
-
+Route::post('/zalopay/payment', [ZaloPayController::class, 'createPayment']);
+Route::get('/zalopay/status', [ZaloPayController::class, 'checkPaymentStatus']);
+Route::post('/zalopay/callback', [ZaloPayController::class, 'paymentCallback'])->name('zalopay.callback');
