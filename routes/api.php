@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProductController;
@@ -27,6 +26,10 @@ use App\Http\Controllers\ZaloPayController;
 |
 */
 
+Route::prefix('promotions')->group(function () {
+    Route::get('/', [PromotionController::class, 'index']);
+    Route::get('/{id}', [PromotionController::class, 'show']);
+});
 // Lấy thông tin user (chỉ dành cho user đã đăng nhập qua Sanctum)
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
