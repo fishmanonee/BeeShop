@@ -62,31 +62,32 @@ class UserController extends Controller
         if (!$user) {
             return response()->json(['message' => 'Người dùng không tồn tại'], 404);
         }
-
+    
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $id,
             'password' => 'sometimes|required|string|min:6',
             'role_id' => 'sometimes|required|integer'
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
+    
         $user->update($request->only(['name', 'email', 'role_id']));
-
+    
         if ($request->has('password')) {
             $user->password = Hash::make($request->password);
             $user->save();
         }
-
+    
         return response()->json([
             'message' => 'Cập nhật người dùng thành công!',
             'user' => $user
         ], 200);
     }
-
+    
+    
     // Xóa người dùng
     public function destroy($id): JsonResponse
     {

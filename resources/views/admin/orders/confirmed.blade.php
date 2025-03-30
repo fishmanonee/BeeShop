@@ -8,7 +8,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Ngày đặt</th>
+                        <th>Ngày cập nhật</th>
                         <th>Trạng thái</th>
                         <th>Tổng tiền sản phẩm</th>
                         <th>Voucher</th>
@@ -22,7 +22,7 @@
                     @foreach ($orders as $order)
                         <tr>
                             <td>DH{{ $order->id }}</td>
-                            <td>{{ $order->created_at }}</td>
+                            <td>{{ $order->updated_at->format('d/m/Y H:i') }}</td>
                             <td><span class="badge bg-info">{{ $order->status->name }}</span></td>
                             {{-- <td>
                                 @if ($order->status_id == 1)

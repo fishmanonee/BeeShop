@@ -100,6 +100,24 @@ class ProductController extends Controller
     }
 
 
+    public function getReviews($id)
+{
+    $product = Product::with('reviews.user')->findOrFail($id);
+
+    $html = "";
+    foreach ($product->reviews as $review) {
+        $html .= "
+            <div class='border p-3 mb-3'>
+                <strong>{$review->user->name}</strong> - <span class='text-warning'>⭐ {$review->rating}/5</span>
+                <p>{$review->comment}</p>
+                <small class='text-muted'>Ngày đánh giá: {$review->created_at->format('d/m/Y H:i')}</small>
+            </div>
+        ";
+    }
+
+    return response($html);
+}
+
 
     function edit(Product $product)
     {

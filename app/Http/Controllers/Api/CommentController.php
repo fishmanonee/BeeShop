@@ -69,14 +69,14 @@ class CommentController extends Controller
     {
         try {
             $product = Product::with('comments.user')->find($productId);
-    
+
             if (!$product) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Không tìm thấy sản phẩm'
                 ], 404);
             }
-    
+
             return response()->json([
                 'status' => 'success',
                 'data' => $product->comments
@@ -89,6 +89,5 @@ class CommentController extends Controller
             ], 500);
         }
     }
-    
-}
 
+}

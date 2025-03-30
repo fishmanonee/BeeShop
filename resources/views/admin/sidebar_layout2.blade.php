@@ -8,6 +8,12 @@
             <li class="sidebar-header">
                 Mục Lục
             </li>
+            <li class="sidebar-item {{ Request::routeIs('dashboard.index') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('dashboard.index') }}">
+                    <i class="align-middle" data-feather="home"></i>
+                    <span class="align-middle">Trang Chủ</span>
+                </a>
+            </li>
 
             <li class="sidebar-item {{ Request::routeIs('products.index') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('products.index') }}">

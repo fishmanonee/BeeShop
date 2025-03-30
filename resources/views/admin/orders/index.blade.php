@@ -9,7 +9,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Ngày đặt</th>
+                    <th>Ngày cập nhật</th>
                     <th>Trạng thái</th>
                     <th>Tổng tiền sản phẩm</th>
                     <th>Voucher</th>
@@ -23,7 +23,7 @@
                 @foreach ($orders as $order)
                 <tr>
                     <td><a style="font-weight: bolder" href="{{ route('orders.show', $order->id)}}">DH{{ $order->id }}</a></td>
-                    <td>{{ $order->created_at }}</td>
+                    <td>{{ $order->updated_at->format('d/m/Y H:i') }}</td>
                     <td><span class="badge bg-success">{{ $order->status->name }}</span></td>
 
                     <td>{{ number_format($order->subtotal, 0, ',', '.') }} đ</td>

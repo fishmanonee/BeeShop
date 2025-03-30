@@ -136,26 +136,33 @@ class OrderController extends Controller
     }
 
     public function confirmOrder($id)
-    {
-        $order = Order::find($id);
+{
+    $order = Order::find($id);
 
-        if (!$order) {
-            return redirect()->back()->with('error', 'Đơn hàng không hợp lệ!');
-        }
-
-        // Kiểm tra trạng thái ban đầu và cập nhật trạng thái mới
-        if ($order->status_id == 1) {
-            $order->update(['status_id' => 3]);
-        } elseif ($order->status_id == 2) {
-            $order->update(['status_id' => 4]);
-        } elseif ($order->status_id == 3 || $order->status_id == 4) {
-            $order->update(['status_id' => 6]);
-        } elseif ($order->status_id == 6) {
-            $order->update(['status_id' => 5]);
-        } else {
-            return redirect()->back()->with('error', 'Trạng thái đơn hàng không hợp lệ để xác nhận!');
-        }
-
-        return redirect()->back()->with('success', 'Đơn hàng đã được xác nhận và chuyển sang danh sách chờ giao hàng!');
+    if (!$order) {
+        return redirect()->back()->with('error', 'Đơn hàng không hợp lệ!');
     }
+
+    // Xác định trạng thái mới
+    $newStatus = match ($order->status_id) {
+        1 => 3, 
+        2 => 4, 
+        3, 4 => 6, 
+        6 => 5, 
+        default => null
+    };
+
+    if ($newStatus === null) {
+        return redirect()->back()->with('error', 'Trạng thái đơn hàng không hợp lệ để xác nhận!');
+    }
+
+    // Cập nhật trạng thái và thời gian updated_at
+    $order->update([
+        'status_id' => $newStatus,
+        'updated_at' => now() // Cập nhật thời gian hiện tại
+    ]);
+
+    return redirect()->back()->with('success', 'Đơn hàng đã được cập nhật!');
+}
+
 }

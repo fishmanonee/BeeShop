@@ -12,9 +12,9 @@ use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\PromotionController;
 use App\Http\Controllers\Api\OrderDetailController;
 use App\Http\Controllers\ZaloPayController;
-
-
-
+use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RevenueController;
 
 
 /*
@@ -37,12 +37,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Route nhóm cho Products
 Route::prefix('products')->group(function () {
-    Route::get('/', [ProductController::class, 'getProducts']);  // Lấy danh sách sản phẩm
-    Route::post('/', [ProductController::class, 'store']);       // Thêm sản phẩm mới
-    Route::get('/{id}', [ProductController::class, 'getProductById']);  // Lấy sản phẩm theo ID
-    Route::put('/{id}', [ProductController::class, 'update']);   // Cập nhật sản phẩm
-    Route::delete('/{id}', [ProductController::class, 'delete']); // Xóa sản phẩm
+    Route::get('/', [ProductController::class, 'getProducts']);
+    Route::get('/{id}', [ProductController::class, 'getProductById']);
+    Route::post('/', [ProductController::class, 'store']);
+    Route::put('/{id}', [ProductController::class, 'update']);
+    Route::delete('/{id}', [ProductController::class, 'delete']);
 });
+Route::get('/products/search/{query}', [ProductController::class, 'search']);
+
+
+
 
 // Route nhóm cho Categories
 Route::prefix('categories')->group(function () {
@@ -70,6 +74,15 @@ Route::prefix('orders')->group(function () {
     Route::delete('/{id}', [OrderController::class, 'destroy']); // Xóa đơn hàng
 
     Route::get('/user/{user_id}', [OrderController::class, 'getOrdersByUser']); //
+    //trang thống kê
+    Route::get('/admin/order-stats', [OrderController::class, 'getOrderStats'])->name('admin.order.stats');
+    Route::get('/admin/orders-by-month', [OrderController::class, 'getOrdersByMonth'])->name('admin.orders.byMonth');
+    Route::get('/admin/reviews-summary', [HomeController::class, 'getReviewsSummary'])->name('admin.reviewsSummary');
+    Route::get('/admin/top-products', [HomeController::class, 'getTopProducts'])->name('admin.topProducts');
+    
+    Route::get('/top-rated-products', [HomeController::class, 'getTopRatedProducts']);
+
+
 
 
 
@@ -101,12 +114,23 @@ Route::post('/zalopay/payment', [ZaloPayController::class, 'createPayment']);
 
 
 
+
+
+// Route::prefix('comments')->group(function () {
+//     Route::get('/', [CommentController::class, 'index']);
+//     Route::post('/', [CommentController::class, 'store']);
+//     Route::get('/{id}', [CommentController::class, 'show']);
+//     Route::delete('/{id}', [CommentController::class, 'delete']);
+// });
+
 Route::prefix('comments')->group(function () {
     Route::get('/', [CommentController::class, 'index']);
     Route::post('/', [CommentController::class, 'store']);
     Route::get('/{id}', [CommentController::class, 'show']);
     Route::delete('/{id}', [CommentController::class, 'delete']);
 });
+Route::get('/products/{id}/comments', [CommentController::class, 'getCommentsByProduct']);
+
 
 //promotions
 Route::prefix('promotions')->group(function () {
@@ -119,5 +143,27 @@ Route::get('/orders/{id}/details', [OrderDetailController::class, 'show']);
 Route::post('/orders/{id}/details', [OrderDetailController::class, 'store']);
 
 
+
+// Wishlist
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/wishlist', [WishlistController::class, 'index']); // Lấy danh sách wishlist
+    Route::post('/wishlist/add', [WishlistController::class, 'addToWishlist']); // Thêm sản phẩm vào wishlist
+    Route::delete('/wishlist/remove', [WishlistController::class, 'removeFromWishlist']); // Xóa sản phẩm khỏi wishlist
+    Route::get('/wishlist/check', [WishlistController::class, 'checkWishlist']); // Kiểm tra sản phẩm có trong wishlist không
+    Route::post('/wishlist/sync', [WishlistController::class, 'syncWishlist']); // Đồng bộ wishlist khi đăng nhập
+});
+
+Route::post('/zalopay/create', [ZaloPayController::class, 'createOrder']);
+Route::post('/zalopay/callback', [ZaloPayController::class, 'callback'])->name('zalopay.callback');
+
 //wishlist
-Route::post('/wishlist/add', [WishlistController::class, 'addToWishlist']);
+
+
+
+
+Route::post('/reviews', [ReviewController::class, 'store']);
+Route::get('/products/{productId}/reviews', [ReviewController::class, 'getReviewsByProduct']);
+
+
+Route::get('/revenue', [RevenueController::class, 'getRevenue']);
+Route::get('/revenue/last7days', [RevenueController::class, 'getRevenueLast7Days']);

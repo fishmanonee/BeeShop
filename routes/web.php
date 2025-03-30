@@ -12,6 +12,8 @@ use App\Http\Controllers\TypeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ReviewController;
+
 
 // Admin controller
 use App\Http\Controllers\AdminController;
@@ -32,6 +34,7 @@ use App\Models\Promotion;
 
 // admin dashboard
 Route::get('/admin2/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/', [HomeController::class, 'index'])->name('dashboard.index');
 Route::get('/admin2/users', [AdminController::class, 'userlist'])->name('admin.users');
 Route::get('/admin2/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/admin2/types', [TypeController::class, 'index'])->name('types.index');
@@ -79,3 +82,9 @@ Route::put('/admin2/promotion/{id}', [PromotionController::class, 'update'])->na
 
 // comments
 Route::delete('admin2/comments/{id}', [CommentController::class, 'delete'])->name('comments.delete');
+
+//reviews
+Route::get('admin2/products/{id}/reviews', [ProductController::class, 'getReviews']);
+
+Route::get('/products/{product}/reviews', [ReviewController::class, 'getReviews'])->name('products.reviews');
+

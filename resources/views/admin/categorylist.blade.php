@@ -25,8 +25,8 @@
                         <td>{{ $item->id }}</td>
                         <td>{{ $item->name }}</td>
                         <td>{{ $item->description }}</td>
-                        <td>{{ $item->created_at }}</td>
-                        <td>{{ $item->updated_at }}</td>
+                        <td>{{ $item->created_at->format('d/m/Y H:i') }}</td>
+                        <td>{{ $item->updated_at->format('d/m/Y H:i') }}</td>
                         <td class="action-icons">
                             <a href="{{ route('admin.category.edit', $item->id) }}" >Chỉnh sửa</a>                             
                             <form action="{{ route('admin.category.destroy', $item->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this category?');">
