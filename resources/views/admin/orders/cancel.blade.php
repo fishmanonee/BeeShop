@@ -10,12 +10,11 @@
                         <th>ID</th>
                         <th>Ngày cập nhật</th>
                         <th>Trạng thái</th>
-                        <th>Tổng tiền sản phẩm</th>
-                        <th>Voucher</th>
-                        <th>Mô tả</th>
+                        
+                        
                         <th>Tổng tiền</th>
                         <th>Hình thức thanh toán</th>
-                        <th>Hành động</th>
+                        <th>Lý do</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -23,7 +22,7 @@
                         <tr>
                             <td>DH{{ $order->id }}</td>
                             <td>{{ $order->updated_at->format('d/m/Y H:i') }}</td>
-                            <td><span class="badge bg-info">{{ $order->status->name }}</span></td>
+                            <td><span class="badge bg-danger">{{ $order->status->name }}</span></td>
                             {{-- <td>
                                 @if ($order->status_id == 1)
                                     <span class="badge bg-warning">Chờ xác nhận</span>
@@ -33,16 +32,16 @@
                                     <span class="badge bg-danger">Đã hủy</span>
                                 @endif
                             </td> --}}
-                            <td>{{ number_format($order->subtotal, 0, ',', '.') }} đ</td>
-                            <td>{{ $order->promotion->code }} </td>
-                            <td>{{ $order->promotion->description }} </td>
+                            
+                            
                             <td>{{ number_format($order->total_amount, 0, ',', '.') }} đ</td>
                             <td>{{ $order->payment_method }} </td>
-                            <td>
+                            <td>{{ $order->cancel_reason }} </td>
+                            {{-- <td>
                                 <a href="{{ route('orders.show', $order->id) }}" class="btn btn-primary btn-sm">Chi tiết</a>
                                 @if ($order->status_id == 3 || 4)
                                     <!-- Chỉ hiển thị khi đơn hàng đang Chờ xác nhận -->
-                                    <form action="{{ route('orders.update', $order->id) }}" method="POST"
+                                    <form action="{{ route('orders.confirm', $order->id) }}" method="POST"
                                         style="display: inline-block;">
                                         @csrf
                                         @method('PUT')
@@ -51,39 +50,12 @@
                                             Tiến Hành Giao Hàng
                                         </button>
                                     </form>
-                                    <form id="cancelForm-{{ $order->id }}"
-                                        action="{{ route('orders.delete', $order->id) }}" method="POST"
-                                        style="display: inline-block;">
-                                        @csrf
-                                        @method('PATCH')
-
-                                        <!-- Nút nhấn để mở input nhập lý do -->
-                                        <button type="button" class="btn btn-danger btn-sm"
-                                            onclick="showCancelReason({{ $order->id }})">
-                                            Hủy đơn hàng
-                                        </button>
-
-                                        <!-- Ô nhập lý do (Ẩn mặc định) -->
-                                        <div id="reasonBox-{{ $order->id }}" style="display: none; margin-top: 10px;">
-                                            <textarea name="cancel_reason" id="cancel_reason-{{ $order->id }}" rows="3"
-                                                placeholder="Nhập lý do hủy đơn..." required></textarea>
-                                            <br>
-                                            <button type="submit" class="btn btn-primary btn-sm">
-                                                Xác nhận hủy
-                                            </button>
-                                        </div>
-                                    </form>
                                 @endif
-                            </td>
+                            </td> --}}
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
     </main>
-    <script>
-        function showCancelReason(orderId) {
-            document.getElementById('reasonBox-' + orderId).style.display = 'block';
-        }
-    </script>
 @endsection

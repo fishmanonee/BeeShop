@@ -14,6 +14,7 @@
                         <th>Danh Mục</th>
                         <th>Loại</th>
                         <th>Hình Ảnh</th>
+                        <th>HOT</th>
                         <th>Giá</th>
                         <th class="text-danger bold">Giá Giảm</th>
                         <th>Mô Tả</th>
@@ -31,7 +32,12 @@
                         <td>{{ $item->type->name}}</td>
                         <td><img src="{{ asset($item->img) }}" width="80" alt="">
                         </td>
-                        
+                        <td>
+                            <label class="switch">
+                                <input type="checkbox" class="toggle-hot" data-id="{{ $item->id }}" {{ $item->is_hot ? 'checked' : '' }}>
+                                <span class="slider round"></span>
+                            </label>
+                        </td>                        
                         <td>{{ number_format($item->price,0,',','.')  }} VNĐ</td>
                         <td class="text-danger" >{{ number_format($item->discount_price,0,',','.')  }} VNĐ</td>  
                         <td>{{ $item->description}}</td>
@@ -61,5 +67,29 @@
             
     </div>
 </main>
+
+<script>
+    $(document).ready(function () {
+        $('.toggle-hot').change(function () {
+            let productId = $(this).data('id');
+            let isHot = $(this).is(':checked') ? 1 : 0;
+
+            $.ajax({
+                url: '/admin2/products/toggle-hot/' + productId,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    is_hot: isHot
+                },
+                success: function (response) {
+                    console.log('Cập nhật trạng thái HOT thành công');
+                },
+                error: function () {
+                    alert('Lỗi khi cập nhật trạng thái sản phẩm hot.');
+                }
+            });
+        });
+    });
+</script>
 
 @endsection

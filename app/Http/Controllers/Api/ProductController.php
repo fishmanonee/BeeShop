@@ -17,19 +17,32 @@ class ProductController extends Controller
      */
     public function getProducts(): JsonResponse
     {
-        $products = Product::with(['category', 'type', 'product_variants'])
-            ->select('id', 'name', 'img', 'description', 'price', 'discount_price', 'category_id', 'type_id', 'created_at', 'updated_at')
-            ->paginate(10); // 10 sản phẩm mỗi trang
+        $products = Product::with(['category', 'type', 'productVariants'])
+            ->select('id', 'name', 'img', 'description', 'price', 'discount_price', 'category_id', 
+                    'type_id', 'created_at', 'updated_at', 'purchase_count','is_hot')
+            ->get();
+        return response()->json($products, 200);
+    }
+    public function getHotProducts(): JsonResponse
+    {
+        $products = Product::with(['category', 'type', 'productVariants'])
+
+            ->where('is_hot',1)// lọc sản phẩm có is_hot = true
+            ->get();                 // lấy toàn bộ thông tin
 
         return response()->json($products, 200);
     }
+
+    
+
+
 
     /**
      * Lấy thông tin sản phẩm theo ID
      */
     public function getProductById($id): JsonResponse
     {
-        $product = Product::with(['category', 'type', 'product_variants'])->find($id);
+        $product = Product::with(['category', 'type', 'productVariants'])->find($id);
 
         if (!$product) {
             return response()->json(['message' => 'Sản phẩm không tồn tại'], 404);
@@ -122,8 +135,7 @@ class ProductController extends Controller
         $products = Product::where('name', 'like', '%' . $query . '%')
             ->orWhere('description', 'like', '%' . $query . '%')
             ->get();
-    
+
         return response()->json($products, 200);
     }
-    
 }

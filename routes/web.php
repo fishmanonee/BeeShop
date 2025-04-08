@@ -46,9 +46,11 @@ Route::get('/admin2/comments', [CommentController::class, 'index'])->name('comme
 // orders
 Route::get('/admin2/orders/pending', [OrderController::class, 'pending'])->name('orders.pending');
 Route::get('/admin2/orders/confirmed', [OrderController::class, 'confirmed'])->name('orders.confirmed');
+Route::get('/admin2/orders/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 Route::get('/admin2/orders/shipping', [OrderController::class, 'shipping'])->name('orders.shipping');
 Route::get('/admin2/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
-Route::put('/admin2/orders/{id}/confirm', [OrderController::class, 'confirmOrder'])->name('orders.confirm');
+Route::put('/admin2/orders/{id}/update', [OrderController::class, 'updateOrder'])->name('orders.update');
+Route::patch('/admin2/orders/{id}/cancel', [OrderController::class, 'cancelOrder'])->name('orders.delete');
 
 
 
@@ -59,6 +61,8 @@ Route::delete('/admin2/products/{id}', [AdminController::class, 'destroyProduct'
 Route::get('/admin2/products/edit/{id}', [AdminController::class, 'editProduct'])->name('admin.product.edit');
 Route::post('/admin2/products/update/{id}', [AdminController::class, 'updateProduct'])->name('admin.product.update');
 Route::get('/admin2/products/{id}', [ProductController::class, 'show'])->name('admin.product.show');
+Route::post('/admin2/products/toggle-hot/{id}', [ProductController::class, 'toggleHot'])->name('admin.product.toggleHot');
+
 
 // types
 Route::get('/admin2/type/create', [TypeController::class, 'create'])->name('type.create');

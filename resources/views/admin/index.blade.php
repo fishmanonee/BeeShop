@@ -145,7 +145,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <h1 class="mt-1 mb-3">{{ $completedOrders }}</h1>
+                                                <h1 class="mt-1 mb-3">{{ $totalOrders }}</h1>
                                                 <div class="mb-0">
                                                     @if ($changePercentage >= 0)
                                                         <span class="text-success">
@@ -257,12 +257,15 @@
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="card-title mb-0 text-primary">Top Sản Phẩm</h5>
                                     <div>
-                                        <button class="btn btn-sm btn-outline-primary me-2" onclick="loadTopRatedProducts()">5★</button>
-                                        <button class="btn btn-sm btn-outline-danger me-2" onclick="sortBy('favorite')">Yêu Thích</button>
-                                        <button class="btn btn-sm btn-outline-success" onclick="sortBy('purchases')">Mua Nhiều</button>
+                                        <button class="btn btn-sm btn-outline-primary me-2"
+                                            onclick="loadTopRatedProducts()">5★</button>
+                                        <button class="btn btn-sm btn-outline-danger me-2"
+                                            onclick="sortBy('favorite')">Yêu Thích</button>
+                                        <button class="btn btn-sm btn-outline-success" onclick="sortBy('purchases')">Mua
+                                            Nhiều</button>
                                     </div>
                                 </div>
-                                
+
                                 <table id="myTable" class="table table-hover my-0">
                                     <thead>
                                         <tr>
@@ -274,21 +277,19 @@
                                         </tr>
                                     </thead>
                                     <tbody id="top-products-body">
-                                        @foreach($products as $product)
+                                        @foreach ($products as $product)
                                             <tr>
                                                 <td>{{ $product->name }}</td>
                                                 <td class="d-none d-xl-table-cell">
                                                     <img src="{{ $product->img }}" width="50">
                                                 </td>
-                                                <td>{{ $product->five_star_count }}</td> <!-- Hiển thị số đánh giá 5 sao -->
+                                                <td>{{ $product->five_star_count }}</td>
+                                                <!-- Hiển thị số đánh giá 5 sao -->
                                                 <td>{{ $product->total_purchased }}</td> <!-- Hiển thị số lượt mua -->
                                                 <td>{{ $product->wishlist_count }}</td> <!-- Hiển thị số lượt yêu thích -->
                                             </tr>
                                         @endforeach
                                     </tbody>
-                                    
-                                    
-                                    
                                 </table>
                             </div>
                         </div>
@@ -362,40 +363,53 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            fetch('/api/revenue/last7days')
+            fetch("{{ route('api.getEarningsLast7Days') }}") // Gọi API
                 .then(response => response.json())
                 .then(data => {
-                    const labels = data.map(item => item.date);
-                    const revenues = data.map(item => item.revenue);
+                    const ctx = document.getElementById("chartjs-dashboard-line-bao").getContext("2d");
 
-                    new Chart(document.getElementById("chartjs-dashboard-line-bao"), {
+                    new Chart(ctx, {
                         type: "line",
                         data: {
-                            labels: labels,
+                            labels: data.labels,
                             datasets: [{
                                 label: "Doanh thu (VND)",
-                                data: revenues,
+                                data: data.data,
                                 borderColor: "#007bff",
-                                backgroundColor: "rgba(0, 123, 255, 0.1)",
-                                fill: true
+                                fill: false
                             }]
                         },
                         options: {
                             responsive: true,
+                            maintainAspectRatio: false,
                             scales: {
                                 x: {
-                                    display: true
+                                    title: {
+                                        display: true,
+                                        text: "Ngày"
+                                    }
                                 },
                                 y: {
-                                    display: true
+                                    title: {
+                                        display: true,
+                                        text: "Doanh thu (VND)"
+                                    },
+                                    ticks: {
+                                        callback: function(value, index, values) {
+                                            return new Intl.NumberFormat('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            }).format(value);
+                                        }
+                                    }
                                 }
                             }
                         }
                     });
-                })
-                .catch(error => console.error("Lỗi khi lấy dữ liệu:", error));
+                });
         });
     </script>
+
 
 
 
@@ -433,13 +447,13 @@
 
     <script>
         function loadTopRatedProducts() {
-    fetch('/api/top-rated-products')
-        .then(response => response.json())
-        .then(data => {
-            let tbody = document.getElementById('top-products-body');
-            tbody.innerHTML = ''; // Xóa dữ liệu cũ
-            data.forEach(product => {
-                tbody.innerHTML += `
+            fetch('/api/top-rated-products')
+                .then(response => response.json())
+                .then(data => {
+                    let tbody = document.getElementById('top-products-body');
+                    tbody.innerHTML = ''; // Xóa dữ liệu cũ
+                    data.forEach(product => {
+                        tbody.innerHTML += `
                     <tr>
                         <td>${product.name}</td>
                         <td class="d-none d-xl-table-cell">
@@ -450,10 +464,9 @@
                         <td class="d-none d-md-table-cell">---</td>
                     </tr>
                 `;
-            });
-        });
-}
-
+                    });
+                });
+        }
     </script>
 
     <script>

@@ -11,8 +11,6 @@
                 @if(session('success'))
                     <div class="alert alert-primary">{{ session('success') }}</div>
                 @endif
-
-                
                 <form action="{{ route('promotion.store') }}" method="POST">
                     @csrf
                     <div class="mb-3">
@@ -35,9 +33,6 @@
                         <label class="form-label">Ngày Kết Thúc</label>
                         <input type="date" name="end_date" class="form-control"   required>
                     </div>
-
-                    
-
                     <div class="text-end">
                         <button type="submit" class="btn btn-success">Thêm Mã</button>
                     </div>

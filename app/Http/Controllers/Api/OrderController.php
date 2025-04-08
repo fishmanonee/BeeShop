@@ -218,6 +218,40 @@ class OrderController extends Controller
         ], 200);
     }
 
+    public function cancelOrder(Request $request, $id)
+{
+    $order = Order::find($id);
+
+    if (!$order) {
+        return response()->json(['error' => 'Đơn hàng không hợp lệ!'], 404);
+    }
+
+    if ($order->status_id != 1 && $order->status_id != 2) {
+        return response()->json(['error' => 'Đơn hàng đã được xác nhận và không thể hủy!'], 400);
+    }
+
+    // Cập nhật trạng thái và lưu lý do hủy đơn
+    $order->update([
+        'status_id' => 7,
+        'cancel_reason' => $request->input('cancel_reason'), // Lưu lý do hủy
+        'updated_at' => now()
+    ]);
+
+    // Giảm số lượng sản phẩm đã mua
+    $this->rollbackProductPurchaseCount($order);
+
+    return response()->json(['success' => 'Đơn hàng đã được hủy thành công!']);
+}
+
+
+public function rollbackProductPurchaseCount($order)
+{
+    foreach ($order->orderDetails as $detail) {
+        $product = $detail->productVariant->product;
+        $product->decrement('purchase_count', $detail->quantity);
+    }
+}
+
 
     // Xóa đơn hàng
     public function destroy($id): JsonResponse

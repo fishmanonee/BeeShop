@@ -37,6 +37,14 @@ class OrderController extends Controller
 
         return view('admin.orders.confirmed', compact('orders'));
     }
+    public function cancel()
+    {
+        $orders = Order::where('status_id', 7)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.orders.cancel', compact('orders'));
+    }
     public function shipping()
     {
         $orders = Order::where('status_id', 6)
@@ -135,7 +143,7 @@ class OrderController extends Controller
         }
     }
 
-    public function confirmOrder($id)
+    public function updateOrder($id)
 {
     $order = Order::find($id);
 
@@ -162,7 +170,58 @@ class OrderController extends Controller
         'updated_at' => now() // Cập nhật thời gian hiện tại
     ]);
 
+    if ($newStatus == 5) {
+        $this->updateProductPurchaseCount($order);  // Gọi hàm để cập nhật số lượt mua
+    }
+
     return redirect()->back()->with('success', 'Đơn hàng đã được cập nhật!');
 }
 
+public function cancelOrder(Request $request,$id)
+{
+    
+    $order = Order::find($id);
+
+    if (!$order) {
+        return redirect()->back()->with('error', 'Đơn hàng không hợp lệ!');
+    }
+
+    if ($order->status_id != 1 && $order->status_id != 2) {
+        return redirect()->back()->with('warning', 'Đơn hàng đã được xác nhận và không thể hủy!');
+    }
+
+    // Kiểm tra xem đơn hàng đã ở trạng thái "Đã hủy" hay chưa
+    if ($order->status_id == 7) {
+        return redirect()->back()->with('warning', 'Đơn hàng này đã bị hủy trước đó!');
+    }
+
+    // Cập nhật trạng thái thành "Đã hủy" (status_id = 7) và thời gian updated_at
+    $order->update([
+        'status_id' => 7,
+        'cancel_reason' => $request->input('cancel_reason'), // Lưu lý do hủy
+        'updated_at' => now() // Cập nhật thời gian hiện tại
+    ]);
+    
+    // Giảm số lượng mua của sản phẩm khi hủy đơn
+    $this->rollbackProductPurchaseCount($order);
+
+    return redirect()->back()->with('success', 'Đơn hàng đã được hủy thành công!');
+
+   
+}
+
+public function updateProductPurchaseCount($order)
+{
+    foreach ($order->orderDetails as $detail) {
+        $product = $detail->productVariant->product;
+        $product->increment('purchase_count', $detail->quantity);
+    }
+}
+public function rollbackProductPurchaseCount($order)
+{
+    foreach ($order->orderDetails as $detail) {
+        $product = $detail->productVariant->product;
+        $product->decrement('purchase_count', $detail->quantity);
+    }
+}
 }

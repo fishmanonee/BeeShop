@@ -41,7 +41,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($product->product_variants as $variant)
+                            @foreach ($product->productVariants as $variant)
                                 <tr>
                                     <td>{{ $variant->size }}</td>
                                     <td>{{ $variant->stock_quantity }}</td>

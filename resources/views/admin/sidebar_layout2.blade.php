@@ -76,6 +76,12 @@
                             <span class="ms-3 align-middle">Đã Hoàn Thành</span>
                         </a>
                     </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('orders.cancel') }}">
+                            <i class="align-middle fa-solid fa-times-circle" ></i>
+                            <span class="ms-3 align-middle">Đã Huỷ</span>
+                        </a>
+                    </li>
                     
                     
                 </ul>

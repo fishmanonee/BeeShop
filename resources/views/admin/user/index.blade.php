@@ -5,7 +5,6 @@
 <main class="content">
     <div class="container-fluid p-0">
         <h1 class="h3 mb-3">Quản Lý <strong>Khách Hàng</strong></h1>
-        
             <table id="myTable" class="table table-striped">
                 <thead>
                     <tr>
@@ -31,25 +30,11 @@
                         <td>{{ $item->created_at }}</td>
                         <td class="action-icons">
                             <a href="">Điều Chỉnh</a>
-                            -
-                            <a href="">Xoá</a>
-                            {{-- <form action="{{ route('admin2.products.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
-                                @csrf
-                                @method('DELETE') --}}
-                                {{-- <a href="{{ route('products.edit', $item->id) }}">Edit</a> -
-                                <button type="submit" style="border: none; background: none; color: red; cursor: pointer;">Delete</button> --}}
-                            {{-- </form> --}}
-                            
                         </td>
                     </tr>
                     @endforeach
-                    
                 </tbody>
             </table>
-    
-            
-        
-
     </div>
 </main>
 

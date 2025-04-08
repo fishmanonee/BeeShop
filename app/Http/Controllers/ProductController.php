@@ -10,28 +10,13 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-
-    function detail()
-    {
-        return view('detail');
-    }
-    // public function index()
-    // {
-
-    //     $products = Product::all();
-    //     $categories = Category::all();
-    //     return view('admin.index2', compact('products', 'categories'));
-    // }
     public function index()
-{
-    $products = Product::withCount('wishlists')->get(); // Đếm số lượt thích
-    $categories = Category::all();
-    return view('admin.index2', compact('products', 'categories'));
-}
-
-
-
-    function store(Request $request)
+    {
+        $products = Product::withCount('wishlists')->get(); // Đếm số lượt thích
+        $categories = Category::all();
+        return view('admin.index2', compact('products', 'categories'));
+    }
+    public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -44,7 +29,6 @@ class ProductController extends Controller
             'variant_price' => 'required|array',
             'variant_discount_price' => 'nullable|array'
         ]);
-
         $imagePath = null;
         if ($request->hasFile('img')) {
             $file = $request->file('img');
@@ -52,7 +36,6 @@ class ProductController extends Controller
             $file->move(public_path('img'), $filename);
             $imagePath = 'img/' . $filename;
         }
-
         $product = Product::create([
             'name' => $request->name,
             'price' => $request->price,
@@ -68,15 +51,13 @@ class ProductController extends Controller
                     ProductVariant::create([
                         'product_id' => $product->id,
                         'size' => $size,
-                        'stock_quantity' => $request->stock[$index] ?? 0, // Đổi từ stock_quantity thành stock
+                        'stock_quantity' => $request->stock[$index] ?? 0, 
                         'price' => $request->variant_price[$index],
                         'discount_price' => $request->variant_discount_price[$index] ?? null
                     ]);
                 }
             }
         }
-
-
         return redirect()->back()->with('success', 'Product created successfully.');
     }
 
@@ -85,12 +66,12 @@ class ProductController extends Controller
     {
         $categories = Category::all();
         $types = Type::all();
-        return view('admin.create', compact('categories','types'));
+        return view('admin.create', compact('categories', 'types'));
     }
 
-    function show($id)
+    public function show($id)
     {
-        $product = Product::with('product_variants')->find($id);
+        $product = Product::with('productVariants')->find($id);
 
         if (!$product) {
             abort(404, 'Product not found');
@@ -101,22 +82,31 @@ class ProductController extends Controller
 
 
     public function getReviews($id)
-{
-    $product = Product::with('reviews.user')->findOrFail($id);
+    {
+        $product = Product::with('reviews.user')->findOrFail($id);
 
-    $html = "";
-    foreach ($product->reviews as $review) {
-        $html .= "
+        $html = "";
+        foreach ($product->reviews as $review) {
+            $html .= "
             <div class='border p-3 mb-3'>
                 <strong>{$review->user->name}</strong> - <span class='text-warning'>⭐ {$review->rating}/5</span>
                 <p>{$review->comment}</p>
                 <small class='text-muted'>Ngày đánh giá: {$review->created_at->format('d/m/Y H:i')}</small>
             </div>
         ";
+        }
+
+        return response($html);
     }
 
-    return response($html);
-}
+    public function toggleHot(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+        $product->is_hot = $request->is_hot;
+        $product->save();
+
+        return response()->json(['success' => true]);
+    }
 
 
     function edit(Product $product)

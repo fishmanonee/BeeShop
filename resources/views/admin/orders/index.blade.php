@@ -31,15 +31,6 @@
                     <td>{{ $order->promotion->description }} </td>
                     <td>{{ number_format($order->total_amount, 0, ',', '.') }} đ</td>
                     <td>{{ $order->payment_method}}</td>
-                    {{-- <td>
-                        @if ($order->status_id == 1)
-                            COD
-                        @elseif ($order->status_id == 2)
-                            ZaloPay
-                        @else
-                            {{ $order->payment_method == 'COD' ? 'COD' : 'ZaloPay' }}
-                        @endif
-                    </td> --}}
                     <td>
                         <a href="{{ route('orders.show', $order->id)}}" class="btn btn-primary btn-sm">Chi tiết</a>
                     </td>

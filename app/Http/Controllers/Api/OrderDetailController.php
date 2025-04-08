@@ -61,6 +61,8 @@ class OrderDetailController extends Controller
             'total_price' => $totalPrice,
         ]);
 
+        
+
         return response()->json([
             'message' => 'Thêm sản phẩm vào đơn hàng thành công!',
             'data' => $orderDetail

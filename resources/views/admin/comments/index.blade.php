@@ -25,7 +25,8 @@
                     <td>{{ $comment->content }}</td>
                     <td>{{ $comment->created_at->format('d/m/Y H:i') }}</td>
                     <td>
-                        <form action="{{ route('comments.delete', $comment->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
+                        <form action="{{ route('comments.delete', $comment->id) }}" method="POST" 
+                            onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-danger btn-sm">Xóa</button>
