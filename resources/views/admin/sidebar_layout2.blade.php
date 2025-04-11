@@ -101,6 +101,12 @@
                     <span class="align-middle">Bình Luận</span>
                 </a>
             </li>
+            <li class="sidebar-item {{ Request::routeIs('admin.blogs.index') ? 'active' : '' }}">
+           <a class="sidebar-link" href="{{ route('admin.blogs.index') }}">
+            <i class="align-middle" data-feather="book-open"></i>
+            <span class="align-middle">Blogs</span>
+            </a>
+</li>
 
 
         </ul>

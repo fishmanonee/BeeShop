@@ -9,9 +9,10 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user() || $request->user()->role_id != 1) { // 1 là quyền admin
-            return response()->json(['error' => 'Unauthorized'], 403);
+        if (auth()->check() && auth()->user()->role_id == 1) {
+            return $next($request);
         }
-        return $next($request);
+
+        return response()->json(['message' => 'Bạn không có quyền truy cập'], 403);
     }
 }
