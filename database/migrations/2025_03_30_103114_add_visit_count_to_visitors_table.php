@@ -9,20 +9,24 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up() {
-        Schema::table('visitors', function (Blueprint $table) {
-            $table->integer('visit_count')->default(1);
-        });
+    public function up(): void
+    {
+        if (!Schema::hasColumn('visitors', 'visit_count')) {
+            Schema::table('visitors', function (Blueprint $table) {
+                $table->integer('visit_count')->default(1);
+            });
+        }
     }
-    
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::table('visitors', function (Blueprint $table) {
-            //
-        });
+        if (Schema::hasColumn('visitors', 'visit_count')) {
+            Schema::table('visitors', function (Blueprint $table) {
+                $table->dropColumn('visit_count');
+            });
+        }
     }
 };
